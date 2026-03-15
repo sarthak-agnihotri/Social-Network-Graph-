@@ -1,0 +1,217 @@
+/* Layout */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 320px;
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.main-content {
+  flex: 1;
+  position: relative;
+  background: #000;
+  /* Fallback */
+  background: radial-gradient(ellipse at bottom right, #1e1b4b 0%, #000000 100%);
+}
+
+/* Typography & Headings */
+.sidebar h2 {
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, #60a5fa 0%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+}
+
+/* Forms & Inputs */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-field,
+.select-field {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-field:focus,
+.select-field:focus {
+  outline: none;
+  border-color: #60a5fa;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+}
+
+.select-field option {
+  background: #1e293b;
+  color: #fff;
+}
+
+/* Buttons */
+.btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+  filter: brightness(1.1);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: none;
+}
+
+/* Results Panel */
+.result-panel {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  color: #34d399;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  word-break: break-all;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Algorithms Grid */
+.algo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.algo-grid .btn {
+  padding: 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* Adjacency Table */
+.adj-list-container {
+  max-height: 200px;
+  overflow-y: auto;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.adj-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  color: #e2e8f0;
+}
+
+.adj-table th {
+  text-align: left;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.adj-table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.adj-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Scrollbar styling for adj-list-container */
+.adj-list-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.adj-list-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.adj-list-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+/* Floating Overlay for graph stats or tips if needed */
+.graph-overlay {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  pointer-events: none;
+}
