@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import './App.css';
 
+// ✅ BASE_URL environment variable se lega, nahi to localhost use karega
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [highlightNodes, setHighlightNodes] = useState(new Set());
@@ -43,7 +46,8 @@ function App() {
 
   const fetchGraph = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/graph');
+      // ✅ FIXED: Using BASE_URL
+      const res = await fetch(`${BASE_URL}/api/graph`);
       const data = await res.json();
       setGraphData(data);
       preloadImages(data.nodes);
@@ -69,7 +73,8 @@ function App() {
     if (!userName || !userEmail) return;
     const id = Date.now().toString();
     try {
-      await fetch('http://localhost:8000/api/user', {
+      // ✅ FIXED: Using BASE_URL
+      await fetch(`${BASE_URL}/api/user`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, name: userName, email: userEmail })
@@ -85,7 +90,8 @@ function App() {
   const addFriendship = async () => {
     if (!sourceId || !targetId) return;
     try {
-      await fetch('http://localhost:8000/api/friendship', {
+      // ✅ FIXED: Using BASE_URL
+      await fetch(`${BASE_URL}/api/friendship`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sourceId, targetId })
@@ -101,7 +107,8 @@ function App() {
   const resetGraph = async () => {
     if (!confirm("Are you sure you want to clear the entire graph?")) return;
     try {
-      await fetch('http://localhost:8000/api/reset', {
+      // ✅ FIXED: Using BASE_URL
+      await fetch(`${BASE_URL}/api/reset`, {
         method: 'POST'
       });
       setGraphData({ nodes: [], links: [] });
@@ -131,7 +138,8 @@ function App() {
   const runBFS = async () => {
     if (!startId) return;
     try {
-      const res = await fetch('http://localhost:8000/api/bfs', {
+      // ✅ FIXED: Using BASE_URL
+      const res = await fetch(`${BASE_URL}/api/bfs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ startId })
@@ -148,7 +156,8 @@ function App() {
   const runDFS = async () => {
     if (!startId) return;
     try {
-      const res = await fetch('http://localhost:8000/api/dfs', {
+      // ✅ FIXED: Using BASE_URL
+      const res = await fetch(`${BASE_URL}/api/dfs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ startId })
@@ -165,7 +174,8 @@ function App() {
   const runShortestPath = async () => {
     if (!startId || !endId) return;
     try {
-      const res = await fetch('http://localhost:8000/api/shortest-path', {
+      // ✅ FIXED: Using BASE_URL
+      const res = await fetch(`${BASE_URL}/api/shortest-path`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ startId, endId })
@@ -401,12 +411,6 @@ function App() {
             ctx.beginPath();
             ctx.arc(node.x, node.y, size, 0, 2 * Math.PI, false);
             ctx.fill();
-
-            // Paint label rect if it exists
-            /* 
-              Label interactions can be tricky with ForceGraph2D as they overlap. 
-              Let's stick to Node interaction primarily.
-            */
           }}
         />
         <div className="graph-overlay">
