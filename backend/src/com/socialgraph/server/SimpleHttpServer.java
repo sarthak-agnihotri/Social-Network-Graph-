@@ -18,53 +18,46 @@ import java.nio.charset.StandardCharsets;
 
 public class SimpleHttpServer {
     private static volatile Graph graph = new Graph();
-    private static final int PORT = 8000;
+    
+    // 🔥 DYNAMIC PORT - Render ke environment variable se lega
+    private static int getPort() {
+        String portEnv = System.getenv("PORT");
+        if (portEnv != null && !portEnv.isEmpty()) {
+            try {
+                return Integer.parseInt(portEnv);
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid PORT value: " + portEnv + ", using default 8000");
+            }
+        }
+        System.out.println("✅ Using default port 8000");
+        return 8000; // default fallback
+    }
 
     public static void main(String[] args) throws IOException {
-        // Server create kar rahe hain port 8000 par
-        HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
-
-
+        // 🔥 PORT dynamically set ho raha hai
+        int port = getPort();
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
         // API Endpoints define kar rahe hain
-        // /api/user se naya user banega
         server.createContext("/api/user", new UserHandler());
-        // /api/friendship se dosti hogi
         server.createContext("/api/friendship", new FriendshipHandler());
-        // /api/graph se pura graph milega verify karne ke liye
         server.createContext("/api/graph", new GraphHandler());
-        // BFS algorithm run karne ke liye
         server.createContext("/api/bfs", new BFSHandler());
-        // DFS algorithm run karne ke liye
         server.createContext("/api/dfs", new DFSHandler());
-        // Shortest Path nikaalne ke liye
         server.createContext("/api/shortest-path", new ShortestPathHandler());
-        // Reset/Clear Graph
         server.createContext("/api/reset", new ResetHandler());
 
         server.setExecutor(null); // Default executor
-        System.out.println("Server started on port " + PORT);
-        System.out.println("API Endpoints:");
-        System.out.println("  POST /api/user");
-        System.out.println("  POST /api/friendship");
-        System.out.println("  GET  /api/graph");
+        System.out.println("\n🚀 Server started successfully on port " + port);
+        System.out.println("📌 API Endpoints:");
+        System.out.println("   POST /api/user");
+        System.out.println("   POST /api/friendship");
+        System.out.println("   GET  /api/graph");
+        System.out.println("   POST /api/bfs");
+        System.out.println("   POST /api/dfs");
+        System.out.println("   POST /api/shortest-path");
+        System.out.println("   POST /api/reset\n");
         server.start();
-    }
-
-
-
-    static class ResetHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            if ("POST".equals(exchange.getRequestMethod()) || "DELETE".equals(exchange.getRequestMethod())) {
-                 graph = new Graph(); // Replace with fresh graph
-                 sendResponse(exchange, 200, "{\"message\": \"Graph cleared\"}");
-            } else if ("OPTIONS".equals(exchange.getRequestMethod())) {
-                 sendResponse(exchange, 204, "");
-            } else {
-                 sendResponse(exchange, 405, "{\"error\": \"Method not allowed\"}");
-            }
-        }
     }
 
     // --- Utility Methods ---
@@ -114,6 +107,20 @@ public class SimpleHttpServer {
     }
 
     // --- Handlers ---
+
+    static class ResetHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if ("POST".equals(exchange.getRequestMethod()) || "DELETE".equals(exchange.getRequestMethod())) {
+                 graph = new Graph(); // Replace with fresh graph
+                 sendResponse(exchange, 200, "{\"message\": \"Graph cleared\"}");
+            } else if ("OPTIONS".equals(exchange.getRequestMethod())) {
+                 sendResponse(exchange, 204, "");
+            } else {
+                 sendResponse(exchange, 405, "{\"error\": \"Method not allowed\"}");
+            }
+        }
+    }
 
     static class UserHandler implements HttpHandler {
         @Override
@@ -180,13 +187,13 @@ public class SimpleHttpServer {
 
                 // Avoid duplicate edges for undirected graph
                 Set<String> addedEdges = new HashSet<>();
-                int j = 0;
                 List<String> links = new ArrayList<>();
                 
                 for (User u : users) {
                     for (User friend : graph.getFriends(u)) {
                         String id1 = u.getId();
                         String id2 = friend.getId();
+                        // Sort to avoid duplicates
                         if (id1.compareTo(id2) > 0) {
                             String temp = id1; id1 = id2; id2 = temp;
                         }
@@ -278,16 +285,19 @@ public class SimpleHttpServer {
         }
     }
 
-    // Helper to find user by ID (linear search since we don't have a map by ID in Graph class exposed, 
-    // real app would map ID -> User)
+    // Helper to find user by ID
     private static User findUserById(String id) {
+        if (id == null) return null;
         for (User u : graph.getAllUsers()) {
             if (u.getId().equals(id)) return u;
         }
-        return null; // Not found
+        return null;
     }
 
     private static String listToJson(List<String> list) {
+        if (list == null || list.isEmpty()) {
+            return "[]";
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         for (int i = 0; i < list.size(); i++) {
