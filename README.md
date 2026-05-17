@@ -64,3 +64,5 @@ The frontend will be available at the URL shown in your terminal (usually `http:
 - `POST /api/dfs`: Runs Depth-First Search starting from a user ID.
 - `POST /api/shortest-path`: Finds the shortest path between two user IDs.
 - `POST /api/reset`: Clears the graph data.
+<br>
+File updated for new revisions.
